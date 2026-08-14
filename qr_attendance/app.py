@@ -43,6 +43,9 @@ def add_attendance(name, faculty, department):
 
         try:
 
+            # Make sure the Excel file exists
+            create_excel_file()
+
             workbook = load_workbook(EXCEL_FILE)
 
             sheet = workbook["Attendance"]
@@ -199,9 +202,12 @@ def index():
     )
 
 
-if __name__ == "__main__":
+# Create the Excel file when the application starts.
+# This also works when the app is started with Gunicorn.
+create_excel_file()
 
-    create_excel_file()
+
+if __name__ == "__main__":
 
     app.run(
         host="0.0.0.0",
