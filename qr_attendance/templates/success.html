@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Kayıt Başarılı</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card success-card">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h1>Kayıt Başarılı</h1>
+
+        <p>
+            Sayın <strong>{{ name }}</strong>,
+        </p>
+
+        <p>
+            katılımınız başarıyla kaydedilmiştir.
+        </p>
+
+        <div class="attendance-confirmed">
+            KATILDI
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

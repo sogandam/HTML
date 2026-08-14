@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Katilim Formu</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="header">
+
+            <h1>Katilim Formu</h1>
+
+            <p>
+                Lütfen bilgilerinizi eksiksiz doldurunuz.
+            </p>
+
+        </div>
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="message {{ category }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <form method="POST">
+
+
+            <div class="form-group">
+
+                <label for="name">
+                    Adi Soyadi
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Adınızı ve soyadınızı giriniz"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="faculty">
+                    Fakülte
+                </label>
+
+                <input
+                    type="text"
+                    id="faculty"
+                    name="faculty"
+                    placeholder="Fakültenizi giriniz"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="department">
+                    Bölüm
+                </label>
+
+                <input
+                    type="text"
+                    id="department"
+                    name="department"
+                    placeholder="Bölümünüzü giriniz"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Katilim Durumu
+                </label>
+
+                <div class="attendance-status">
+
+                    <span>✓</span>
+
+                    <strong>KATILDI</strong>
+
+                </div>
+
+            </div>
+
+
+            <button type="submit">
+                KATILIMI ONAYLA
+            </button>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
