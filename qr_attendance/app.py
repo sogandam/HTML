@@ -38,12 +38,11 @@ def create_excel_file():
 def add_attendance(name, faculty, department):
     """Add an attendance record to Excel."""
 
-    # Try several times if Excel is temporarily locked
     for attempt in range(5):
 
         try:
 
-            # Make sure the Excel file exists
+            # Make sure Excel file exists
             create_excel_file()
 
             workbook = load_workbook(EXCEL_FILE)
@@ -100,7 +99,6 @@ def add_attendance(name, faculty, department):
 
         except PermissionError:
 
-            # Excel file may temporarily be locked
             if attempt < 4:
 
                 time.sleep(1)
@@ -202,8 +200,7 @@ def index():
     )
 
 
-# Create the Excel file when the application starts.
-# This also works when the app is started with Gunicorn.
+# Excel dosyasını uygulama başlarken oluştur
 create_excel_file()
 
 
