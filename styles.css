@@ -1,0 +1,78 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #E6E6FA; /* Kuru mor - lavender */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    color: #333; /* Genel metin rengi */
+}
+
+.container {
+    background-color: #D1C4E9; /* Açık mor */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 1000px;
+    text-align: center;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #5E2D92; /* Başlık için koyu mor */
+}
+
+.question-container {
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.question {
+    padding: 25px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background-color: #B39DDB; /* Orta mor */
+    font-size: 20px;
+    box-sizing: border-box;
+}
+
+input[type="radio"] {
+    margin-right: 10px;
+    transform: scale(1.2); /* Daha büyük butonlar */
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    background-color: #7986CB; /* Kuru mavi buton */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: 30px;
+}
+
+button:hover {
+    background-color: #5C6BC0; /* Kuru mavi buton hover */
+}
+
+.result {
+    margin-top: 30px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #5E2D92; /* Sonuç için koyu mor */
+    padding: 20px;
+    background-color: #D1C4E9; /* Aynı açık mor renk */
+    border-radius: 10px;
+}

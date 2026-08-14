@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Kullanici giris sistemi</title>
+   
+</head>
+<body>
+   <h2>Choose Your Country & City</h2>
+   <label for="Country">Country :</label>
+   <select id="country" onchange="updatecity()">
+    <option value="">Select Country</option>
+    <option value="usa">USA</option>
+    <option value="canada">Canada</option>
+    <option value="germany">Germany</option>
+   </select>
+   <label for="city">City: </label>
+    <select id="city">
+        <option value="">Select a city</option>
+    </select>
+    <script>
+        const countrySelect = document.getElementById('country');
+        const citySelect = document.getElementById("city");
+        const cities = {
+             usa: ['New York', 'Los Angeles', 'Chicago'],
+           canada: ['Toronto', 'Vancouver', 'Montreal'],
+           germany: ['Berlin', 'Munich', 'Hamburg']
+};
+     function updateCities() {
+       const selectedCountry = countrySelect.value;
+       citySelect.innerHTML = '<option value="">Select a city</option>';
+    if (selectedCountry) {
+         const selectedCities = cities[selectedCountry];
+         for(let city in selectedCities) {            
+            const option = document.createElement('option');
+            option.value = selectedCities[city].toLowerCase().replace(' ', '-');
+            option.textContent = selectedCities[city];
+            citySelect.appendChild(option);
+        };
+    }
+}
+
+    </script>
+</body>
+</html>

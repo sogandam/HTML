@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üyelik Sistemi</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #222, #444);
+            color: #eee;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background: #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+
+        header {
+            width: 100%;
+            padding: 15px 0;
+            background-color: #444;
+            color: #fff;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+            margin: auto;
+        }
+
+        input {
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #666;
+            border-radius: 5px;
+            background: #222;
+            color: #eee;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 8px rgba(231, 76, 60, 0.7);
+        }
+
+        button {
+            padding: 12px;
+            font-size: 1rem;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .error {
+            color: #e74c3c;
+            margin-top: -10px;
+            font-size: 0.9rem;
+        }
+
+        .success {
+            color: #2ecc71;
+            font-size: 1rem;
+        }
+
+        .profile {
+            padding: 20px;
+            background-color: #222;
+            border-radius: 10px;
+            color: #eee;
+            text-align: left;
+        }
+
+        .profile h2 {
+            margin-top: 0;
+        }
+
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #222;
+            color: #eee;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .buttons button {
+            width: 120px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Üyelik Sistemi</h1>
+    </header>
+    <main>
+        <div id="app" class="container">
+            <div id="register">
+                <h2>Kayıt Ol</h2>
+                <form id="registerForm">
+                    <input type="text" id="name" placeholder="Adınız" required>
+                    <input type="text" id="surname" placeholder="Soyadınız" required>
+                    <input type="email" id="email" placeholder="E-posta" required>
+                    <input type="text" id="username" placeholder="Kullanıcı Adı" required>
+                    <input type="password" id="password" placeholder="Şifre" required>
+                    <button type="button" onclick="registerUser()">Kayıt Ol</button>
+                </form>
+                <p id="registerMessage" class="error"></p>
+            </div>
+            <div id="login" style="display: none;">
+                <h2>Giriş Yap</h2>
+                <form id="loginForm">
+                    <input type="text" id="loginUsername" placeholder="Kullanıcı Adı" required>
+                    <input type="password" id="loginPassword" placeholder="Şifre" required>
+                    <button type="button" onclick="loginUser()">Giriş Yap</button>
+                </form>
+                <p id="loginMessage" class="error"></p>
+            </div>
+            <div id="profile" style="display: none;">
+                <div class="profile">
+                    <h2>Profil Bilgileri</h2>
+                    <p id="profileInfo"></p>
+                    <button onclick="logout()">Çıkış Yap</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Üyelik Sistemi</p>
+    </footer>
+    <script>
+        const users = [];
+
+        function registerUser() {
+            const name = document.getElementById('name').value;
+            const surname = document.getElementById('surname').value;
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (users.find(user => user.username === username)) {
+                document.getElementById('registerMessage').textContent = 'Bu kullanıcı adı zaten alınmış.';
+                return;
+            }
+
+            users.push({ name, surname, email, username, password });
+            document.getElementById('registerMessage').textContent = '';
+            alert('Kayıt başarılı! Giriş yapabilirsiniz.');
+            showLogin();
+        }
+
+        function loginUser() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const user = users.find(user => user.username === username && user.password === password);
+
+            if (!user) {
+                document.getElementById('loginMessage').textContent = 'Kullanıcı adı veya şifre hatalı.';
+                return;
+            }
+
+            document.getElementById('loginMessage').textContent = '';
+            showProfile(user);
+        }
+
+        function showProfile(user) {
+            document.getElementById('register').style.display = 'none';
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('profile').style.display = 'block';
+            document.getElementById('profileInfo').innerHTML = `
+                <p><strong>Ad:</strong> ${user.name}</p>
+                <p><strong>Soyad:</strong> ${user.surname}</p>
+                <p><strong>E-posta:</strong> ${user.email}</p>
+                <p><strong>Kullanıcı Adı:</strong> ${user.username}</p>
+            `;
+        }
+
+        function logout() {
+            showRegister();
+        }
+
+        function showRegister() {
+            document.getElementById('register').style.display = 'block';
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('profile').style.display = 'none';
+        }
+
+        function showLogin() {
+            document.getElementById('register').style.display = 'none';
+            document.getElementById('login').style.display = 'block';
+            document.getElementById('profile').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

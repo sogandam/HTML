@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>sogand</title>
+        <style>
+            #btn{
+                width: 80px;
+                height: 30px;
+                font-size: 10px;
+                color: black;
+                background-color: aqua;
+                margin-top: 20px;
+            }
+            #btn:hover{
+                background-color: black;
+                color: aqua;
+            }
+        </style>
+    </head>
+    <body>
+        <table border="3">
+            <tr>
+                <td><label for="">Name : </label></td>
+                <td><input type="text" name="firstname"></td>
+            </tr>
+            <tr>
+                <td><label for="">Last name : </label></td>
+                <td><input type="text" name="lastname"></td>
+            </tr>
+        </table>
+        <button type="button" id="btn" ondblclick="hello()">click here</button>
+        <script>
+            function hello(){
+                alert("hello my friend")
+            }
+        </script>
+    </body>
+</html>

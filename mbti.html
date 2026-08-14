@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI Testi</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>MBTI Kişilik Testi</h1>
+        <form id="mbti-test">
+            <div class="question-container">
+                <!-- Sorular 1-30 -->
+                <div class="question">
+                    <p>1. Kendini sosyal ortamlarda daha enerjik mi hissedersin yoksa yalnız kaldığında mı daha dinlenmiş hissedersin?</p>
+                    <input type="radio" name="q1" value="E"> Sosyal ortamlarda daha enerjik hissederim.<br>
+                    <input type="radio" name="q1" value="I"> Yalnız kaldığımda daha dinlenmiş hissederim.<br>
+                </div>
+
+                <div class="question">
+                    <p>2. Yeni insanlarla tanışmak seni mutlu eder mi yoksa daha az tanıdık insanlarla vakit geçirmeyi mi tercih edersin?</p>
+                    <input type="radio" name="q2" value="E"> Yeni insanlarla tanışmayı severim.<br>
+                    <input type="radio" name="q2" value="I"> Daha az tanıdık insanlarla vakit geçirmeyi tercih ederim.<br>
+                </div>
+
+                <div class="question">
+                    <p>3. Gerçekçi ve somut bilgiler mi, yoksa soyut ve geleceğe dair tahminler mi daha ilginç gelir?</p>
+                    <input type="radio" name="q3" value="S"> Gerçekçi ve somut bilgilerle ilgilenirim.<br>
+                    <input type="radio" name="q3" value="N"> Soyut ve geleceğe dair tahminler ilgimi çeker.<br>
+                </div>
+
+                <div class="question">
+                    <p>4. Bir şey hakkında konuşmak yerine, gözlemlerini not almak mı daha hoşuna gider?</p>
+                    <input type="radio" name="q4" value="S"> Gözlemlerimi not almak daha hoşuma gider.<br>
+                    <input type="radio" name="q4" value="N"> Konuşmak ve tartışmak daha keyifli gelir.<br>
+                </div>
+
+                <div class="question">
+                    <p>5. Karar verirken mantıklı ve objektif mi, yoksa duygusal ve insanları göz önünde bulundurmak mı tercih edersin?</p>
+                    <input type="radio" name="q5" value="T"> Mantıklı ve objektif kararlar alırım.<br>
+                    <input type="radio" name="q5" value="F"> İnsanları ve duyguları göz önünde bulundururum.<br>
+                </div>
+
+                <div class="question">
+                    <p>6. Hata yaptığında, düzeltmek için mantıklı bir çözüm önerir misin, yoksa insanların duygularını anlamaya mı çalışırsın?</p>
+                    <input type="radio" name="q6" value="T"> Hata yaptığımda mantıklı bir çözüm öneririm.<br>
+                    <input type="radio" name="q6" value="F"> İnsanların duygularını anlamaya çalışırım.<br>
+                </div>
+
+                <div class="question">
+                    <p>7. Planlı ve organize olmak mı tercih edersin, yoksa spontane olmayı mı?</p>
+                    <input type="radio" name="q7" value="J"> Planlı ve organize olmaktan hoşlanırım.<br>
+                    <input type="radio" name="q7" value="P"> Spontane ve esnek olmak daha hoşuma gider.<br>
+                </div>
+
+                <div class="question">
+                    <p>8. Bir projede çalışırken, her şeyi önceden planlamak mı, yoksa gelişen olaylara göre şekillendirmek mi daha rahatlatıcıdır?</p>
+                    <input type="radio" name="q8" value="J"> Her şeyi önceden planlamak daha rahatlatıcıdır.<br>
+                    <input type="radio" name="q8" value="P"> Olaylara göre şekillendirmek daha rahatlatıcıdır.<br>
+                </div>
+
+                <!-- Bu şekilde soruları 30'a kadar ekleyebilirsiniz -->
+                <div class="question">
+                    <p>30. Hızlıca kararlar alır mısın yoksa her detayı dikkatlice düşünür müsün?</p>
+                    <input type="radio" name="q30" value="J"> Hızlıca kararlar alırım.<br>
+                    <input type="radio" name="q30" value="P"> Her detayı dikkatlice düşünürüm.<br>
+                </div>
+
+                <button type="submit">Sonuçları Göster</button>
+            </div>
+        </form>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
