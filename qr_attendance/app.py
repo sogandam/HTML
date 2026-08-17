@@ -1,123 +1,195 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from openpyxl import Workbook, load_workbook
 from datetime import datetime
 import os
-import time
+import json
+import gspread
+from google.oauth2.service_account import Credentials
+
 
 app = Flask(__name__)
 
-app.secret_key = "attendance-secret-key"
+# Secret key for Flask messages
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "attendance-secret-key"
+)
 
-EXCEL_FILE = "attendance.xlsx"
+
+# ============================================================
+# GOOGLE SHEETS SETTINGS
+# ============================================================
+
+# Your Google Sheet ID
+SPREADSHEET_ID = "1tSXOGdLg-RUyYNcCejUwS0O_UU1EC-95zzbYzSxhwl8"
 
 
-def create_excel_file():
-    """Create the Excel file if it does not exist."""
+# Google API permissions
+SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets"
+]
 
-    if not os.path.exists(EXCEL_FILE):
 
-        workbook = Workbook()
+def get_google_sheet():
+    """
+    Connect to Google Sheets using the Google Cloud
+    service account credentials stored in Render.
+    """
 
-        sheet = workbook.active
-        sheet.title = "Attendance"
+    credentials_json = os.environ.get(
+        "GOOGLE_SERVICE_ACCOUNT_JSON"
+    )
 
-        sheet.append([
-            "No",
-            "Adı Soyadı",
-            "Fakülte",
-            "Bölüm",
-            "Katılım Durumu",
-            "Tarih",
-            "Saat"
-        ])
+    if not credentials_json:
+        raise Exception(
+            "GOOGLE_SERVICE_ACCOUNT_JSON environment variable is missing."
+        )
 
-        workbook.save(EXCEL_FILE)
-        workbook.close()
+    credentials_info = json.loads(credentials_json)
 
+    credentials = Credentials.from_service_account_info(
+        credentials_info,
+        scopes=SCOPES
+    )
+
+    client = gspread.authorize(credentials)
+
+    spreadsheet = client.open_by_key(
+        SPREADSHEET_ID
+    )
+
+    # Use the first worksheet
+    worksheet = spreadsheet.sheet1
+
+    return worksheet
+
+
+# ============================================================
+# CREATE / CHECK HEADERS
+# ============================================================
+
+def setup_sheet():
+    """
+    Make sure the Google Sheet has the correct headers.
+    """
+
+    worksheet = get_google_sheet()
+
+    headers = [
+        "No",
+        "Adı Soyadı",
+        "Fakülte",
+        "Bölüm",
+        "Katılım Durumu",
+        "Tarih/Saat"
+    ]
+
+    first_row = worksheet.row_values(1)
+
+    if first_row != headers:
+        worksheet.update(
+            "A1:F1",
+            [headers]
+        )
+
+
+# ============================================================
+# ADD ATTENDANCE
+# ============================================================
 
 def add_attendance(name, faculty, department):
-    """Add an attendance record to Excel."""
+    """
+    Add a new attendance record to Google Sheets.
 
-    for attempt in range(5):
+    Returns:
+        True       -> successful
+        False      -> duplicate
+        "error"    -> error
+    """
 
-        try:
+    try:
 
-            # Make sure Excel file exists
-            create_excel_file()
+        worksheet = get_google_sheet()
 
-            workbook = load_workbook(EXCEL_FILE)
+        # Get all existing records
+        records = worksheet.get_all_values()
 
-            sheet = workbook["Attendance"]
+        # ----------------------------------------------------
+        # CHECK DUPLICATES
+        # ----------------------------------------------------
 
-            # Check for duplicate registration
-            for row in sheet.iter_rows(
-                min_row=2,
-                values_only=True
+        for row in records[1:]:
+
+            if len(row) < 4:
+                continue
+
+            existing_name = row[1].strip().lower()
+            existing_faculty = row[2].strip().lower()
+            existing_department = row[3].strip().lower()
+
+            if (
+                existing_name == name.strip().lower()
+                and existing_faculty == faculty.strip().lower()
+                and existing_department == department.strip().lower()
             ):
 
-                existing_name = row[1]
-                existing_faculty = row[2]
-                existing_department = row[3]
+                return False
 
-                if (
-                    existing_name
-                    and existing_faculty
-                    and existing_department
-                    and str(existing_name).strip().lower()
-                    == name.strip().lower()
-                    and str(existing_faculty).strip().lower()
-                    == faculty.strip().lower()
-                    and str(existing_department).strip().lower()
-                    == department.strip().lower()
-                ):
+        # ----------------------------------------------------
+        # REGISTRATION NUMBER
+        # ----------------------------------------------------
 
-                    workbook.close()
+        registration_number = len(records)
 
-                    return False
+        # ----------------------------------------------------
+        # DATE AND TIME
+        # ----------------------------------------------------
 
-            # Create registration number
-            registration_number = sheet.max_row
+        now = datetime.now()
 
-            # Current date and time
-            now = datetime.now()
+        date_time = now.strftime(
+            "%d.%m.%Y %H:%M:%S"
+        )
 
-            sheet.append([
+        # ----------------------------------------------------
+        # ADD NEW ROW
+        # ----------------------------------------------------
+
+        worksheet.append_row(
+            [
                 registration_number,
                 name,
                 faculty,
                 department,
                 "KATILDI",
-                now.strftime("%d.%m.%Y"),
-                now.strftime("%H:%M:%S")
-            ])
+                date_time
+            ],
+            value_input_option="USER_ENTERED"
+        )
 
-            workbook.save(EXCEL_FILE)
+        return True
 
-            workbook.close()
+    except Exception as error:
 
-            return True
+        print(
+            "Google Sheets error:",
+            error
+        )
 
-        except PermissionError:
+        return "error"
 
-            if attempt < 4:
 
-                time.sleep(1)
-
-            else:
-
-                return "locked"
-
-        except Exception as error:
-
-            print("Excel error:", error)
-
-            return "error"
-
+# ============================================================
+# HOME PAGE
+# ============================================================
 
 @app.route("/", methods=["GET", "POST"])
 def index():
 
     if request.method == "POST":
+
+        # ----------------------------------------------------
+        # GET FORM DATA
+        # ----------------------------------------------------
 
         name = request.form.get(
             "name",
@@ -134,7 +206,10 @@ def index():
             ""
         ).strip()
 
-        # Make sure all fields are filled
+        # ----------------------------------------------------
+        # CHECK EMPTY FIELDS
+        # ----------------------------------------------------
+
         if not name or not faculty or not department:
 
             flash(
@@ -146,12 +221,19 @@ def index():
                 url_for("index")
             )
 
-        # Save attendance
+        # ----------------------------------------------------
+        # SAVE TO GOOGLE SHEETS
+        # ----------------------------------------------------
+
         result = add_attendance(
             name,
             faculty,
             department
         )
+
+        # ----------------------------------------------------
+        # SUCCESS
+        # ----------------------------------------------------
 
         if result is True:
 
@@ -159,6 +241,10 @@ def index():
                 "success.html",
                 name=name
             )
+
+        # ----------------------------------------------------
+        # DUPLICATE
+        # ----------------------------------------------------
 
         elif result is False:
 
@@ -171,17 +257,9 @@ def index():
                 url_for("index")
             )
 
-        elif result == "locked":
-
-            flash(
-                "Kayıt dosyası şu anda kullanımda. "
-                "Lütfen Excel dosyasını kapatıp tekrar deneyiniz.",
-                "error"
-            )
-
-            return redirect(
-                url_for("index")
-            )
+        # ----------------------------------------------------
+        # ERROR
+        # ----------------------------------------------------
 
         else:
 
@@ -200,9 +278,9 @@ def index():
     )
 
 
-# Excel dosyasını uygulama başlarken oluştur
-create_excel_file()
-
+# ============================================================
+# START APPLICATION
+# ============================================================
 
 if __name__ == "__main__":
 
